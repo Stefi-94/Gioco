@@ -3857,6 +3857,16 @@ break}}GetDebuggerProperties(){return[{title:"$"+this.GetBehaviorType().GetName(
 }
 
 {
+'use strict';{const C3=self.C3;C3.Behaviors.Rotate=class RotateBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Behaviors.Rotate.Type=class RotateType extends C3.SDKBehaviorTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}}
+{const C3=self.C3;const SPEED=0;const ACCELERATION=1;const ENABLE=2;C3.Behaviors.Rotate.Instance=class RotateInstance extends C3.SDKBehaviorInstanceBase{constructor(inst,properties){super(inst);this._speed=0;this._acceleration=0;this._isEnabled=true;if(properties){this._speed=C3.toRadians(properties[SPEED]);this._acceleration=C3.toRadians(properties[ACCELERATION]);this._isEnabled=properties[ENABLE]}if(this._isEnabled)this._StartTicking()}Release(){super.Release()}SaveToJson(){return{"s":this._speed,
+"a":this._acceleration,"e":this._isEnabled}}LoadFromJson(o){this._speed=o["s"];this._acceleration=o["a"];this._SetEnabled(o["e"])}Tick(){if(!this._isEnabled)return;const dt=this._runtime.GetDt(this._inst);if(dt===0)return;if(this._acceleration!==0)this._speed+=this._acceleration*dt;if(this._speed!==0){const wi=this._inst.GetWorldInfo();wi.SetAngle(wi.GetAngle()+this._speed*dt);wi.SetBboxChanged()}}GetPropertyValueByIndex(index){switch(index){case SPEED:return C3.toDegrees(this._speed);case ACCELERATION:return C3.toDegrees(this._acceleration);
+case ENABLE:return this._isEnabled}}SetPropertyValueByIndex(index,value){switch(index){case SPEED:this._speed=C3.toRadians(value);break;case ACCELERATION:this._acceleration=C3.toRadians(value);break;case ENABLE:this._SetEnabled(value);break}}_SetEnabled(e){this._isEnabled=!!e;if(this._isEnabled)this._StartTicking();else this._StopTicking()}GetDebuggerProperties(){const prefix="behaviors.rotate";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".properties.speed.name",value:C3.toDegrees(this._speed),
+onedit:v=>this._speed=C3.toRadians(v)},{name:prefix+".properties.acceleration.name",value:C3.toDegrees(this._acceleration),onedit:v=>this._acceleration=C3.toRadians(v)},{name:prefix+".properties.enabled.name",value:this._isEnabled,onedit:v=>this._SetEnabled(v)}]}]}}}{const C3=self.C3;C3.Behaviors.Rotate.Cnds={IsEnabled(){return this._isEnabled}}}{const C3=self.C3;C3.Behaviors.Rotate.Acts={SetSpeed(s){this._speed=C3.toRadians(s)},SetAcceleration(a){this._acceleration=C3.toRadians(a)},SetEnabled(e){this._SetEnabled(e)}}}
+{const C3=self.C3;C3.Behaviors.Rotate.Exps={Speed(){return C3.toDegrees(this._speed)},Acceleration(){return C3.toDegrees(this._acceleration)}}};
+
+}
+
+{
 const C3 = self.C3;
 self.C3_GetObjectRefTable = function () {
 	return [
@@ -3873,6 +3883,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Audio,
 		C3.Plugins.Browser,
 		C3.Plugins.LocalStorage,
+		C3.Behaviors.Rotate,
 		C3.Plugins.System.Cnds.OnLayoutStart,
 		C3.Plugins.System.Acts.SetVar,
 		C3.Behaviors.Tween.Acts.TweenOneProperty,
@@ -3959,6 +3970,8 @@ self.C3_JsPropNameTable = [
 	{Nemico: 0},
 	{Nuvola: 0},
 	{LocalStorage: 0},
+	{Rotate: 0},
+	{Sine: 0},
 	{Sprite: 0},
 	{start: 0},
 	{maxY: 0},
@@ -4082,7 +4095,9 @@ self.C3_ExpressionFuncs = [
 		() => "salto",
 		() => "",
 		() => 1500,
-		() => 0.1,
+		() => 2,
+		() => 2000,
+		() => 0.2,
 		p => {
 			const n0 = p._GetNode(0);
 			const f1 = p._GetNode(1).GetBoundMethod();
@@ -4131,7 +4146,6 @@ self.C3_ExpressionFuncs = [
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => Math.round(f0(0, 6));
 		},
-		() => 2,
 		() => 6,
 		p => {
 			const n0 = p._GetNode(0);
